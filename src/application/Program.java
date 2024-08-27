@@ -1,4 +1,4 @@
-package application; // Solução muito ruim
+package application; //Solução muito ruim - a classe Reservation responsavel pela logica de reserva não o Program
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,22 +35,18 @@ public class Program {
 		System.out.print("Check-out date (dd/MM/yyyy): ");
 		checkOut = sdf.parse(sc.next());
 		 
-		
-		Date now = new Date();
-		if (checkIn.before(now) || checkOut.before(now)) {
-			System.out.print("Error in reservation: Reservation dates for update must be future dates");
+		String error = reservation.updateDates(checkIn, checkOut);
+			if (error != null) {
+				System.out.println("Error in Reservation: " + error);
+			}
+			else {
+				System.out.println("Reservation: " + reservation);
+			}
 		}
-		else if (!checkOut.after(checkIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		}
-		else {
-		reservation.updateDates(checkIn, checkOut);
-		System.out.println("Reservation: " + reservation);
-		
-		}
+		sc.close();
 	}	
-       sc.close();
+       
 		
+	}	
 	
-	}
-}
+

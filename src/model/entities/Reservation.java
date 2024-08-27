@@ -1,4 +1,4 @@
-package model.entities;//Solução muito ruim
+package model.entities; // solução ruim ou melhorada 
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,9 +40,20 @@ public class Reservation {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public void updateDates(Date checkIn, Date checkOut) {
+	public String updateDates(Date checkIn, Date checkOut) {  // o metodo muda de void para String
+		
+		Date now = new Date();
+		
+		if (checkIn.before(now) || checkOut.before(now)) {  // logica que estava no Program
+			return "Error in reservation: Reservation dates for update must be future dates";
+		}
+		if (!checkOut.after(checkIn)) {
+			return "Error in reservation: Check-out date must be after check-in date";
+		}
+		
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
+		return null;
 	}
 	
 	@Override
