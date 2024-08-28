@@ -1,8 +1,10 @@
-package model.entities; // solução ruim ou melhorada 
+package model.entities; // solução boa - tratamento de exceções
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import model.exceptions.DomainException;
 
 public class Reservation {
 
@@ -13,12 +15,14 @@ public class Reservation {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
-
+		if (!checkOut.after(checkIn)) {
+			throw new DomainException("Check-out date must be after check-in date");
+		}
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
 	}
-	
+
 	public Integer getRoomNumber() {
 		return roomNumber;
 	}
@@ -35,25 +39,21 @@ public class Reservation {
 		return checkOut;
 	}
 
-    public long duration() {
+	public long duration() {
 		long diff = checkOut.getTime() - checkIn.getTime();
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public String updateDates(Date checkIn, Date checkOut) {  // o metodo muda de void para String
-		
+	public void updateDates(Date checkIn, Date checkOut) {
 		Date now = new Date();
-		
-		if (checkIn.before(now) || checkOut.before(now)) {  // logica que estava no Program
-			return "Error in reservation: Reservation dates for update must be future dates";
+		if (checkIn.before(now) || checkOut.before(now)) {
+			throw new DomainException("Reservation dates for update must be future dates");
 		}
 		if (!checkOut.after(checkIn)) {
-			return "Error in reservation: Check-out date must be after check-in date";
+			throw new DomainException("Check-out date must be after check-in date");
 		}
-		
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null;
 	}
 	
 	@Override
@@ -69,4 +69,3 @@ public class Reservation {
 			+ " nights";
 	}
 }
-
